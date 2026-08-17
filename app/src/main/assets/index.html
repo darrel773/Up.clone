@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>UP CLONE</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    margin:0;
+    background:#020604;
+    color:#00ff66;
+    font-family:monospace;
+    font-size:12px;
+}
+
+.panel{
+    width:100%;
+    min-height:100vh;
+    background:#061009;
+    border:1px solid #00ff66;
+}
+
+.header{
+    padding:12px;
+    background:#0a180e;
+    border-bottom:1px solid #155b2e;
+}
+
+.title{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.sub{
+    margin-top:4px;
+    color:#54bd78;
+    font-size:10px;
+}
+
+.content{
+    padding:10px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+}
+
+.card{
+    padding:9px;
+    background:#09150d;
+    border:1px solid #164d2b;
+    border-radius:7px;
+}
+
+.label{
+    color:#63b97d;
+    font-size:9px;
+}
+
+.value{
+    margin-top:5px;
+    color:#00ff66;
+    font-size:13px;
+}
+
+.section{
+    margin-top:12px;
+    margin-bottom:6px;
+    color:#72dc96;
+    font-weight:bold;
+}
+
+.feature{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px;
+    margin-bottom:5px;
+    background:#08130c;
+    border:1px solid #123e23;
+    border-radius:6px;
+}
+
+.feature span{
+    color:#b4e8c3;
+    font-size:10px;
+}
+
+button{
+    border:0;
+    border-radius:5px;
+    padding:5px 10px;
+    font-family:monospace;
+    font-weight:bold;
+}
+
+.on{
+    background:#00ff66;
+    color:#001b08;
+}
+
+.off{
+    background:#252a27;
+    color:#9ba59f;
+}
+
+.scan{
+    width:100%;
+    margin-top:8px;
+    padding:10px;
+    background:#00ff66;
+    color:#001b08;
+}
+
+.terminal{
+    height:150px;
+    overflow:auto;
+    padding:8px;
+    background:#010302;
+    border:1px solid #164d2b;
+    border-radius:6px;
+    color:#00ff66;
+    font-size:9px;
+    line-height:1.6;
+}
+
+.bar{
+    height:5px;
+    margin-top:6px;
+    background:#102218;
+    border-radius:4px;
+    overflow:hidden;
+}
+
+.fill{
+    width:94%;
+    height:100%;
+    background:#00ff66;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="panel">
+
+    <div class="header">
+        <div class="title">
+            UP CLONE // COMMAND PANEL
+        </div>
+
+        <div class="sub">
+            LOCAL DEFENSIVE CONTROL CENTER
+        </div>
+    </div>
+
+    <div class="content">
+
+        <div class="grid">
+
+            <div class="card">
+                <div class="label">SYSTEM</div>
+                <div class="value">ONLINE</div>
+            </div>
+
+            <div class="card">
+                <div class="label">DEFENSE</div>
+                <div class="value">ACTIVE</div>
+            </div>
+
+            <div class="card">
+                <div class="label">TEST ADDRESS</div>
+                <div class="value">192.0.2.47</div>
+            </div>
+
+            <div class="card">
+                <div class="label">LATENCY</div>
+                <div class="value" id="latency">
+                    24ms
+                </div>
+            </div>
+
+        </div>
+
+        <div class="section">
+            SECURITY STATUS
+        </div>
+
+        <div class="card">
+
+            <div>
+                INTEGRITY
+                <span id="score">94%</span>
+            </div>
+
+            <div class="bar">
+                <div class="fill"></div>
+            </div>
+
+        </div>
+
+        <div class="section">
+            DEFENSE MODULES
+        </div>
+
+        <div id="modules"></div>
+
+        <button
+            class="scan"
+            onclick="startScan()">
+
+            START LOCAL SECURITY CHECK
+
+        </button>
+
+        <div class="section">
+            EVENT TERMINAL
+        </div>
+
+        <div
+            id="terminal"
+            class="terminal">
+
+            &gt; UP CLONE boot sequence<br>
+            &gt; Dashboard initialized<br>
+            &gt; Local monitoring active
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const modules = [
+
+    "FIREWALL CORE",
+    "INTRUSION DETECTOR",
+    "PACKET MONITOR",
+    "PORT GUARD",
+    "DNS GUARD",
+    "SESSION GUARD",
+    "ACCESS CONTROL",
+    "ENCRYPTION CORE",
+    "PROCESS WATCH",
+    "CONNECTION SHIELD",
+    "TRAFFIC FILTER",
+    "SYSTEM INTEGRITY",
+    "AUTH GUARD",
+    "NODE PROTECTION",
+    "THREAT ANALYSIS",
+    "LOG MONITOR"
+
+];
+
+const container =
+    document.getElementById("modules");
+
+modules.forEach((name,index)=>{
+
+    const row =
+        document.createElement("div");
+
+    row.className="feature";
+
+    const text =
+        document.createElement("span");
+
+    text.textContent=name;
+
+    const button =
+        document.createElement("button");
+
+    if(index % 4 === 3){
+
+        button.className="off";
+        button.textContent="✕";
+
+    }else{
+
+        button.className="on";
+        button.textContent="✓";
+
+    }
+
+    button.onclick=()=>{
+
+        if(button.className==="on"){
+
+            button.className="off";
+            button.textContent="✕";
+
+            log(name+" DISABLED");
+
+        }else{
+
+            button.className="on";
+            button.textContent="✓";
+
+            log(name+" ENABLED");
+
+        }
+
+    };
+
+    row.appendChild(text);
+    row.appendChild(button);
+
+    container.appendChild(row);
+
+});
+
+function log(message){
+
+    const terminal =
+        document.getElementById("terminal");
+
+    terminal.innerHTML +=
+        "<br>&gt; "+message;
+
+    terminal.scrollTop =
+        terminal.scrollHeight;
+
+}
+
+function startScan(){
+
+    let progress=0;
+
+    log("LOCAL SECURITY CHECK STARTED");
+
+    const timer=setInterval(()=>{
+
+        progress+=10;
+
+        document.getElementById("score")
+            .textContent=progress+"%";
+
+        log(
+            "ANALYZING MODULE "+
+            progress+
+            "%"
+        );
+
+        if(progress>=100){
+
+            clearInterval(timer);
+
+            document.getElementById("score")
+                .textContent="98%";
+
+            log(
+                "LOCAL CHECK COMPLETE"
+            );
+
+            log(
+                "NO EXTERNAL DEVICE ACCESSED"
+            );
+
+        }
+
+    },180);
+
+}
+
+setInterval(()=>{
+
+    const latency =
+        15+
+        Math.floor(
+            Math.random()*35
+        );
+
+    document.getElementById(
+        "latency"
+    ).textContent=
+        latency+"ms";
+
+},1000);
+
+setInterval(()=>{
+
+    const events=[
+
+        "Firewall rules refreshed",
+        "System integrity verified",
+        "Local telemetry updated",
+        "Traffic filter checked",
+        "Access policy verified",
+        "Encryption status OK"
+
+    ];
+
+    const event =
+        events[
+            Math.floor(
+                Math.random()*events.length
+            )
+        ];
+
+    log(event);
+
+},2500);
+
+</script>
+
+</body>
+</html>
